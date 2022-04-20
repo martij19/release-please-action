@@ -1,6 +1,8 @@
 const core = require('@actions/core')
 const { GitHub } = require('release-please/build/src/github')
 const { Manifest } = require('release-please/build/src/manifest')
+const globalAgent = require('global-agent')
+globalAgent.bootstrap()
 
 const CONFIG_FILE = 'release-please-config.json'
 const MANIFEST_FILE = '.release-please-manifest.json'
