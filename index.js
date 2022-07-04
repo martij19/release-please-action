@@ -192,11 +192,18 @@ function outputPRs (prs) {
   }
 }
 
+function retry(maxRetries) {
+  return main().catch(function(err) { 
+    if (maxRetries <= 0) {
+      core.setFailed(`release-please failed: ${err.message}`);
+    }
+    return retry(maxRetries - 1, fn); 
+  });
+}
+
 /* c8 ignore next 4 */
 if (require.main === module) {
-  main().catch(err => {
-    core.setFailed(`release-please failed: ${err.message}`)
-  })
+  retry(3)
 } else {
   module.exports = releasePlease
 }
