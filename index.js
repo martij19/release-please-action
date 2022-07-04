@@ -21,7 +21,8 @@ function getGitHubInput () {
     repoUrl: core.getInput('repo-url') || process.env.GITHUB_REPOSITORY,
     apiUrl: core.getInput('github-api-url') || GITHUB_API_URL,
     graphqlUrl: core.getInput('github-graphql-url') || GITHUB_GRAPHQL_URL,
-    token: core.getInput('token', { required: true })
+    token: core.getInput('token', { required: true }),
+    retryLimit: core.getInput('retry-limit') || 3
   }
 }
 
@@ -203,7 +204,8 @@ function retry(maxRetries, fn) {
 
 /* c8 ignore next 4 */
 if (require.main === module) {
-  retry(3, main)
+  const { retryLimit } = getGitHubInput()
+  retry(retryLimit, main)
 } else {
   module.exports = releasePlease
 }
