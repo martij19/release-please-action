@@ -21,7 +21,8 @@ function getGitHubInput () {
     repoUrl: core.getInput('repo-url') || process.env.GITHUB_REPOSITORY,
     apiUrl: core.getInput('github-api-url') || GITHUB_API_URL,
     graphqlUrl: core.getInput('github-graphql-url') || GITHUB_GRAPHQL_URL,
-    token: core.getInput('token', { required: true })
+    token: core.getInput('token', { required: true }),
+    retryLimit: core.getInput('retry-limit') || 3
   }
 }
 
@@ -192,11 +193,19 @@ function outputPRs (prs) {
   }
 }
 
+function retry(maxRetries, fn) {
+  return fn().catch(function(err) { 
+    if (maxRetries <= 0) {
+      core.setFailed(`release-please failed: ${err.message}`);
+    }
+    return retry(maxRetries - 1, fn); 
+  });
+}
+
 /* c8 ignore next 4 */
 if (require.main === module) {
-  main().catch(err => {
-    core.setFailed(`release-please failed: ${err.message}`)
-  })
+  const { retryLimit } = getGitHubInput()
+  retry(retryLimit, main)
 } else {
   module.exports = releasePlease
 }
