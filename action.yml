@@ -96,6 +96,10 @@ inputs:
     description: 'mark pull request as a draft'
     required: false
     default: false
+  retry-limit:
+    description: 'how many times the action should retry if it fails'
+    required: false
+    default: ''
 
 runs:
   using: 'node12'
