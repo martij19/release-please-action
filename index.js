@@ -192,8 +192,8 @@ function outputPRs (prs) {
   }
 }
 
-function retry(maxRetries) {
-  return main().catch(function(err) { 
+function retry(maxRetries, fn) {
+  return fn().catch(function(err) { 
     if (maxRetries <= 0) {
       core.setFailed(`release-please failed: ${err.message}`);
     }
@@ -203,7 +203,7 @@ function retry(maxRetries) {
 
 /* c8 ignore next 4 */
 if (require.main === module) {
-  retry(3)
+  retry(3, main())
 } else {
   module.exports = releasePlease
 }
