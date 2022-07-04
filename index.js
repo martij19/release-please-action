@@ -203,7 +203,7 @@ function retry(maxRetries, fn) {
 
 /* c8 ignore next 4 */
 if (require.main === module) {
-  retry(3, main())
+  retry(3, main)
 } else {
   module.exports = releasePlease
 }
